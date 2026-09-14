@@ -1,3 +1,4 @@
+const { publishUserRegistered } = require("../events/userEvents");
 const bcrypt = require("bcrypt");
 
 const {
@@ -65,6 +66,8 @@ const registerUser = async (req, res) => {
       email: normalizedEmail,
       passwordHash,
     });
+
+    await publishUserRegistered(user);
 
     return res.status(201).json({
       message: "User registered successfully",
