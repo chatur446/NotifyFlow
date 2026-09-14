@@ -17,9 +17,12 @@ app.use("/api/users", userRoutes);
 
 const PORT = process.env.USER_SERVICE_PORT || 3001;
 
+const { connectToNats } = require("./config/nats");
+
 const startServer = async () => {
   try {
     await testDatabaseConnection();
+    await connectToNats();
 
     app.listen(PORT, () => {
       console.log(`User Service running on port ${PORT}`);
