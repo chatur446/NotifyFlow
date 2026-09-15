@@ -1,5 +1,6 @@
 const { StringCodec } = require("nats");
 const { getNatsConnection } = require("../config/nats");
+const { processUserRegistered } = require("../services/notificationService");
 
 const stringCodec = StringCodec();
 
@@ -15,7 +16,10 @@ const subscribeToUserRegistered = async () => {
       const event = JSON.parse(stringCodec.decode(message.data));
 
       console.log("Received user.registered event:");
-      console.log(JSON.stringify(event, null, 2));
+
+      const notification = await processUserRegistered(event);
+
+      console.log("Notification completed:", notification.type);
     } catch (error) {
       console.error("Failed to process user.registered event:", error);
     }
@@ -23,5 +27,5 @@ const subscribeToUserRegistered = async () => {
 };
 
 module.exports = {
-  subscribeToUserRegistered,
+  subscribeToUserRegistered
 };
