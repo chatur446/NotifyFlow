@@ -2,6 +2,7 @@ const express = require("express");
 
 const notificationRoutes = require("./routes/notificationRoutes");
 const { connectToNats } = require("./config/nats");
+const { ensureUserEventsStream } = require("./config/jetstream");
 const { subscribeToUserRegistered } = require("./events/userEvents");
 
 const app = express();
@@ -15,6 +16,7 @@ const PORT = process.env.NOTIFICATION_SERVICE_PORT || 3002;
 const startServer = async () => {
   try {
     await connectToNats();
+    await ensureUserEventsStream();
 
     subscribeToUserRegistered().catch((error) => {
       console.error("NATS consumer error:", error);

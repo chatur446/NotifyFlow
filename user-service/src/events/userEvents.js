@@ -6,6 +6,7 @@ const stringCodec = StringCodec();
 
 const publishUserRegistered = async (user) => {
   const nc = getNatsConnection();
+  const js = nc.jetstream();
 
   const event = {
     eventId: crypto.randomUUID(),
@@ -18,12 +19,13 @@ const publishUserRegistered = async (user) => {
     },
   };
 
-  nc.publish(
+  const ack = await js.publish(
     "user.registered",
     stringCodec.encode(JSON.stringify(event))
   );
 
   console.log("Published user.registered event:", event.eventId);
+  console.log("JetStream sequence:", ack.seq);
 };
 
 module.exports = {
